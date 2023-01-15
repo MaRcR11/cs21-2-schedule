@@ -5,8 +5,8 @@ async function setAppointmentColors(scheduleData) {
   if (!scheduleData) return;
   scheduleData = JSON.parse(scheduleData);
   let subjectColors = await subjectsModel.find();
-  let subjectColors_ = [(await subjectsModel.find())[0].name];
-
+  let subjectColors_ = []
+  subjectColors.map((e,i) =>{subjectColors_.push(e.name)})
   subjectColors.map(async (e, i) => {
     scheduleData.map(async (subject, j) => {
       if (subjectColors_.includes(subject.description)) null;
