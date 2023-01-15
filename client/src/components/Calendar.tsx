@@ -1,4 +1,4 @@
-import React from "react";
+import {useEffect, useState} from "react";
 import {
   Agenda,
   Day,
@@ -12,6 +12,7 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 import {scheduleDataFormat, setAppointmentColors} from "../helpers";
 import "../styles/Calender.css";
+import axios from "axios";
 
 interface Props {
   scheduleData: {
@@ -25,7 +26,12 @@ interface Props {
   }[];
 }
 function Calendar(this: any, props: Props) {
+
+
+
   const formattedScheduleData = scheduleDataFormat(props.scheduleData);
+const [subjectColors, setSubjectColors] = useState([])
+
   const localData: EventSettingsModel = {
     dataSource: formattedScheduleData,
     allowAdding: false,
@@ -33,14 +39,23 @@ function Calendar(this: any, props: Props) {
     allowDeleting: false,
   };
 
+
+  useEffect(() =>{
+    axios.get("http://localhost:4959/subjects").then(res => console.log(res.data)).catch(err => console.log(err))
+  },[])
+
   function onEventRendered(args: any) {
     var scheduleObj: any = (document.querySelector(".e-schedule") as any)
       .ej2_instances[0];
-    setAppointmentColors(args, scheduleObj);
+    setAppointmentColors(args, scheduleObj, subjectColors);
     if (scheduleObj.currentView == "Day")
       args.element.classList.add("daySelected");
   }
 
+
+
+
+  
   return (
     <ScheduleComponent
       eventSettings={localData}

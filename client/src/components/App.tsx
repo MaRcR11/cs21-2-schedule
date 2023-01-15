@@ -37,8 +37,10 @@ function App() {
           .catch((err) => {
             setapiAvailable(false);
           })
-      : null;
+      : null; 
   }, [fireRedirect]);
+
+ 
 
   return (
     <>

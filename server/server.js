@@ -7,11 +7,12 @@ const app = express();
 const PORT = 4959 || process.env.PORT;
 const cron = require("node-cron");
 const bcrypt = require("bcryptjs");
-const Login = require("./models/model");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const Model = require("./models/model");
+const subjectsModel = require("./models/subjectsModel");
 const { createBrowserFetcher } = require("puppeteer");
+const setAppointmentColors = require("./helpers/setAppointmentColors");
 const db = mongoose.connection;
 
 let data;
@@ -53,6 +54,17 @@ app.post("/login", async (req, res) => {
   const pwd = req.body.pwd;
   const result = await checkPwd(pwd);
   result ? res.status(200).json("success") : res.status(401).json("failed");
+});
+
+app.get("/subjects", async (req, res) => {
+  try {
+    await setAppointmentColors(data);
+    const subjectColors = await subjectsModel.find();
+
+    res.status(200).json(subjectColors);
+  } catch (err) {
+    res.status(401).json(subjectColors);
+  }
 });
 
 const checkPwd = async (pwd) => {

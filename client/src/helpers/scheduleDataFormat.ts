@@ -11,7 +11,7 @@ function scheduleDataFormat(
 ): any {
   const formattedScheduleData: any = [];
   const regexGroup = "Gruppe";
-  const regexVSreplace = "VS";
+  const regexVSreplace = /VS\s/;
   scheduleData.map((e, i) => {
     formattedScheduleData.push({
       EndTime: new Date(e.end * 1000),
