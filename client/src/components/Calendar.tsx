@@ -10,7 +10,7 @@ import {
   ViewsDirective,
   ViewDirective,
 } from "@syncfusion/ej2-react-schedule";
-import {scheduleDataFormat, setAppointmentColors} from "../helpers";
+import {scheduleDataFormat, setAppointmentColors, getSubjects} from "../helpers";
 import "../styles/Calender.css";
 import axios from "axios";
 
@@ -30,7 +30,7 @@ function Calendar(this: any, props: Props) {
 
 
   const formattedScheduleData = scheduleDataFormat(props.scheduleData);
-const [subjectColors, setSubjectColors] = useState([])
+const [subjectColors, setSubjectColors] = useState<any>([])
 
   const localData: EventSettingsModel = {
     dataSource: formattedScheduleData,
@@ -40,13 +40,20 @@ const [subjectColors, setSubjectColors] = useState([])
   };
 
 
-  useEffect(() =>{
-    axios.get("http://localhost:4959/subjects").then(res => console.log(res.data)).catch(err => console.log(err))
-  },[])
+  const getSubjects = () :any => {
+    axios.get("http://localhost:4959/subjects").then(res =>{
+      setSubjectColors(res.data)
+  }).catch(err => console.log(err))
+  
+  }
+  
 
-  function onEventRendered(args: any) {
+  async function onEventRendered(args: any) {
     var scheduleObj: any = (document.querySelector(".e-schedule") as any)
       .ej2_instances[0];
+
+    getSubjects()
+    console.log(subjectColors)
     setAppointmentColors(args, scheduleObj, subjectColors);
     if (scheduleObj.currentView == "Day")
       args.element.classList.add("daySelected");
