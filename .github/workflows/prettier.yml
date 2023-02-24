@@ -1,26 +1,32 @@
-name: Prettier
+name: Format (prettier)
 
-# This action works with pull requests and pushes
 on:
-  pull_request:
-  push:
-    branches:
-      - '**'
+    push:
+        branches:
+            - 'master'
+    pull_request:
+        paths:
+            - '**.css'
+            - '**.js'
+            - '**.vue'
 
 jobs:
-  prettier:
-    runs-on: ubuntu-latest
+    prettier:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.head_ref }}
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          # Make sure the actual branch is checked out when running on pull requests
-          ref: ${{ github.head_ref }}
+            - name: Install
+              run: yarn install
+              env:
+                  CI: true
 
-      - name: Prettify code
-        uses: creyD/prettier_action@v4.2
-        with:
-          # This part is also where you can pass other options, for example:
-          prettier_options: {**/*,*}.{js,ts,jsx,tsx,md} --write
+            - name: Run prettier
+              run: yarn run prettier --write 'src/**/*.{html,css,js,ts,jsx,tsx,}'
+
+            - uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  commit_message: Apply prettier changes
 
